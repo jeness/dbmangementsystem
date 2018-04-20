@@ -1,5 +1,6 @@
 <?php
-  $con = mysql_connect("localhost","root","");
+ include 'dbinfo.php';
+  $con = oci_connect($username, $password, $connection_string);
   if (!$con)
     {
     die('Could not connect: ' . mysql_error());

@@ -10,15 +10,18 @@ session_start();
   $Username = $_GET['username'];
   $Password = $_GET['password'];
 
-  $admin = mysql_query("
-        select *
-        from admin
-        where admin.username = \"" .$Username. "\"
-    ");
-  
+  // $admin = mysql_query("
+  //       select *
+  //       from admin
+  //       where admin.username = \"" .$Username. "\"
+  //   ");
+  $adminstatement = oci_parse($con, 'select * from "ADMINUSER" where "ADMINUSER".AD_ID = (:Username)');
+  oci_bind_by_name($adminstatement,":Username",$Username);
+  $result = oci_execute($adminstatement);
+
   $count = 0;
 
-  while($row = mysql_fetch_array($admin))
+  while($row = oci_fetch_array($adminstatement))
   {
     $count = $count + 1;
     $rightPassword = $row['password'];
