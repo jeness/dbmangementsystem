@@ -62,7 +62,7 @@
 		//echo $sqlQuery;
 		
 		//echo $query;
-		echo "<script>alert('Create card successfully!')</script>";
+		echo "<script>alert('Create library user successfully!')</script>";
 		echo "<script language=\"javascript\">";
 		echo "document.location=\"index.php\"";
 		echo "</script>";

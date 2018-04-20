@@ -3,11 +3,10 @@
   $con = oci_connect($username, $password, $connection_string);
   if (!$con)
     {
-    die('Could not connect: ' . mysql_error());
+    die('Could not connect: ' . oci_error());
     }
-  // some code
 
-  mysql_select_db("my_db", $con);
+  // mysql_select_db("my_db", $con);
 ?>
 
 <!DOCTYPE html>

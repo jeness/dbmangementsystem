@@ -154,12 +154,14 @@ form input[type=password] {
 }
 </style>
 <?php
-	$con = mysql_connect("localhost","root","");
+	include 'dbinfo.php';
+  $con = oci_connect($username, $password, $connection_string);
   if (!$con)
   {
-    die('Could not connect: ' . mysql_error());
+    die('Could not connect: ' . oci_error());
   }
-  mysql_select_db("my_db", $con);
+  session_start();
+  // mysql_select_db("my_db", $con);
  /* $create_admin = "CREATE TABLE admin 
   (
     username  varchar(20),
@@ -168,34 +170,42 @@ form input[type=password] {
   )";
   mysql_query($create_admin);
 */
-  $Username_o = $_GET["username"];
-  $Password = $_GET["password"];
-  $Username = "'".$Username_o."'";
+  $Username = $_GET['username'];
+  $Password = $_GET['password'];
+  //$Username = "'".$Username_o."'";
         
-    $admin = mysql_query("
-        select *
-        from Card
-        where Card.card_number = ".$Username);
- // echo $admin;
+  $adminstatement = oci_parse($con,'select *
+        from "LIBRARYUSER"
+        where "LIBRARYUSER".US_ID = (:Username)');
+  oci_bind_by_name($adminstatement,":Username",$Username);
+  $result = oci_execute($adminstatement);
+
   $count = 0;
-  while($row = mysql_fetch_array($admin))
+
+  while($row = oci_fetch_array($adminstatement))
   {
     $count = $count + 1;
     //if ($row['card_number']==$Username)
-    	$rightPassword = $row['password'];
+    $rightPassword = $row['password'];
 		$name = $row['name'];
-		$department = $row['department'];
-		
+    $email = $row['email'];
+    $phonenumber = $row['phonenumber'];		
   }
   
 
-  $searchCard = "
-		select *
-		from borrow
-		where borrow.card_number = ".$Username." and borrow.return_date = 0";
-  $res = mysql_query($searchCard);
+  $searchCard = oci_parse($con,'select *
+        from "borrow"
+        where "borrow".US_ID = (:Username)');
+  oci_bind_by_name($searchCard,":Username",$Username);
+  $result = oci_execute($searchCard);
+
+   // $searchCard = "
+		// select *
+		// from borrow
+		// where borrow.card_number = ".$Username." and borrow.return_date = 0";
+  // $res = mysql_query($searchCard);
   $total = 0;
-  while($row = mysql_fetch_array($res))
+  while($row = oci_fetch_array($searchCard))
   {
     $total = $total + 1;
   //  echo $row['card_number'];
@@ -414,52 +424,54 @@ form input[type=text_long] {
 }
 </style>
 <?php
-	$con = mysql_connect("localhost","root","");
+	include 'dbinfo.php';
+  $con = oci_connect($username, $password, $connection_string);
 	if (!$con)
 	  {
-	  die('Could not connect: ' . mysql_error());
+	  die('Could not connect: ' . oci_error());
 	  }
 	// some code
+    // session_start();
   $url = $_SERVER['REQUEST_URI'];
  // echo $url;
-  mysql_select_db("my_db", $con);
-	$create_book = "CREATE TABLE book 
-	(
-		book_id  varchar(20),
-		kind varchar(20),
-		book_name varchar(40),
-		press varchar(40),
-		year int,
-		author varchar(20),
-		price double(8,2),
-		total int,
-		stock int,
-		PRIMARY KEY (book_id)
-	)";
-	mysql_query($create_book);
+  // mysql_select_db("my_db", $con);
+	// $create_book = "CREATE TABLE book 
+	// (
+	// 	book_id  varchar(20),
+	// 	kind varchar(20),
+	// 	book_name varchar(40),
+	// 	press varchar(40),
+	// 	year int,
+	// 	author varchar(20),
+	// 	price double(8,2),
+	// 	total int,
+	// 	stock int,
+	// 	PRIMARY KEY (book_id)
+	// )";
+	// mysql_query($create_book);
 
-	$create_card = " CREATE TABLE card
-	(
-		card_number varchar(20),
-		name varchar(20),
-		department varchar(50),
-		password varchar(10),
-		PRIMARY KEY (card_number)
-	)";
-	mysql_query($create_card);
+	// $create_card = " CREATE TABLE card
+	// (
+	// 	card_number varchar(20),
+	// 	name varchar(20),
+	// 	department varchar(50),
+	// 	password varchar(10),
+	// 	PRIMARY KEY (card_number)
+	// )";
+	// mysql_query($create_card);
 
-	$create_borrow = " CREATE TABLE borrow
-	(
-		borrow_number varchar(20),
-		book_id varchar(20),
-		card_number varchar(20),
-		borrow_date date,
-		return_date date,
-		PRIMARY KEY (borrow_number),
-		FOREIGN KEY (book_id) REFERENCES book(book_id),
-		FOREIGN KEY (card_number) REFERENCES card(card_number)
-	)";
-	mysql_query($create_borrow);
+	// $create_borrow = " CREATE TABLE borrow
+	// (
+	// 	borrow_number varchar(20),
+	// 	book_id varchar(20),
+	// 	card_number varchar(20),
+	// 	borrow_date date,
+	// 	return_date date,
+	// 	PRIMARY KEY (borrow_number),
+	// 	FOREIGN KEY (book_id) REFERENCES book(book_id),
+	// 	FOREIGN KEY (card_number) REFERENCES card(card_number)
+	// )";
+	// mysql_query($create_borrow);
 	
 	
 ?>
@@ -509,7 +521,7 @@ form input[type=text_long] {
 					<ul>
 						<li><input type="submit" value = "search" style=" font-size: 14px;"class = "button"></li>
 					</ul>
-          <input type = "hidden" name = "CardNumber" value = "<?php echo $Username_o;?>"/>
+          <input type = "hidden" name = "CardNumber" value = "<?php echo $Username;?>"/>
 				</form>
 			</div>
 
@@ -528,12 +540,6 @@ form input[type=text_long] {
 				 <?php echo $name;?>
 								</h3>
 			</ul>
-			<ul>
-				<li style = "font-size: 24px;">Department:</li>
-			 <h3>
-			 	<?php echo $department;?>
-			 					</h3>
-			 </ul>	
 			 <ul>
 				<li style = "font-size: 24px;">Borrowed number:</li>
 			 <h3>
@@ -547,7 +553,7 @@ form input[type=text_long] {
 			<form action="userReturn.php" method="get" >
 				<h2> Return Books: </h2>
 				<ul>
-					<input type = "hidden" name = "CardNumber" value = "<?php echo $Username_o;?>"/>
+					<input type = "hidden" name = "CardNumber" value = "<?php echo $Username;?>"/>
 					<input type = "hidden" name = "Password" value = "<?php echo $Password;?>"/>
 					<input type = "hidden" name = "url" value = "<?php echo $url;?>" />
 				</ul>
@@ -562,7 +568,7 @@ form input[type=text_long] {
 			<form action="showCard.php" method="get" >
 				<h2> Search The book Your borrow: </h2>
 				<ul>
-					<input type = "hidden" name = "CardNumber" value = "<?php echo $Username_o;?>"/>
+					<input type = "hidden" name = "CardNumber" value = "<?php echo $Username;?>"/>
 				</ul>
 				<ul>
 					<input type="submit"  value = "search" style=" font-size: 14px;" class = "button"/>
