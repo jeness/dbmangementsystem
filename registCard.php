@@ -16,14 +16,17 @@
 	// 	from card
 	// 	where card.card_number = \"" .$cardNumber.
 	// 	"\"";
-	$statement = oci_parse($con,'select *
+	$statementselect = oci_parse($con,'select *
 		from card
 		where card.card_number = (:cardNumber)');
-	oci_bind_by_name($statement,":cardNumber",$cardNumber);
-	oci_execute($statement);
+	oci_bind_by_name($statementselect,":cardNumber",$cardNumber);
+	// oci_bind_by_name($statementselect,':name', $name);
+	// oci_bind_by_name($statementselect,':department',$department);
+	// oci_bind_by_name($statementselect,':password', $password);
+	$result = oci_execute($statementselect);
 	// $query = mysql_query($searchCard);
 	$countCard = 0;
-	while($row = oci_fetch_array($statement))
+	while($row = oci_fetch_array($statementselect))
   	{
   		$countCard = $countCard + 1;
   	}
@@ -41,16 +44,16 @@
 		// ";
 			// $query = mysql_query($sqlQuery);
 			$sqlQuery = "insert into card(card_number, name, department, password) values(:card_number,:name,:department,:passWord )";
-			$statement = oci_parse($con,$sqlQuery);
+			$statement = oci_parse($con,'INSERT INTO "card" VALUES (:card_number,:name,:department,:passWord )');
 			oci_bind_by_name($statement,':card_number',$cardNumber);
 			oci_bind_by_name($statement, ':name', $name);
 			oci_bind_by_name($statement,':department',$department);
 			oci_bind_by_name($statement,':password', $password);
-			oci_execute($statement,OCI_COMMIT_ON_SUCCESS);
+			$resul = oci_execute($statement,OCI_COMMIT_ON_SUCCESS);
 		    oci_free_statement($statement);  
-		    if(oci_num_rows){  
-            echo "插入成功";  
-      	    }  
+		    // if(oci_num_rows){  
+      //       echo "插入成功";  
+      // 	    }  
 		//echo $sqlQuery;
 		
 		//echo $query;
