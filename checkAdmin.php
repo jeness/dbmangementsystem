@@ -1,13 +1,14 @@
 <?php
-  $con = mysql_connect("localhost","root","");
+  include 'dbinfo.php';
+  $con = oci_connect($username, $password, $connection_string);
   if (!$con)
   {
     die('Could not connect: ' . mysql_error());
   }
-  mysql_select_db("my_db", $con);
+  // mysql_select_db("my_db", $con);
 session_start();
-  $Username = $_GET["username"];
-  $Password = $_GET["password"];
+  $Username = $_GET['username'];
+  $Password = $_GET['password'];
 
   $admin = mysql_query("
         select *

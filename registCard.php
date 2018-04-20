@@ -10,7 +10,9 @@
 
 	$cardNumber = $_GET['CardNumber'];
 	$name 		= $_GET['Name'];
-	$department = $_GET['Department'];
+	// $department = $_GET['Department'];
+	$email = $_GET['Email'];
+	$phonenumber = $_GET['Phonenumber'];
 	$password 	= $_GET['PassWord'];
 	// $searchCard = "
 	// 	select *
@@ -18,8 +20,8 @@
 	// 	where card.card_number = \"" .$cardNumber.
 	// 	"\"";
 	$statementselect = oci_parse($con,'select *
-		from card
-		where card.card_number = (:cardNumber)');
+		from "LIBRARYUSER"
+		where "LIBRARYUSER".user_id = (:cardNumber)');
 	oci_bind_by_name($statementselect,":cardNumber",$cardNumber);
 	// oci_bind_by_name($statementselect,':name', $name);
 	// oci_bind_by_name($statementselect,':department',$department);
@@ -44,11 +46,13 @@
 		// 	values (\"" .$cardNumber. "\", \"" .$name. "\", \"" .$department. "\", \"" .$password. "\")
 		// ";
 			// $query = mysql_query($sqlQuery);
-			$sqlQuery = "insert into card(card_number, name, department, password) values(:card_number,:name,:department,:passWord )";
-			$statement = oci_parse($con,'INSERT INTO "card" VALUES (:card_number,:name,:department,:passWord )');
+			// $sqlQuery = "insert into card(card_number, name, department, password) values(:card_number,:name,:department,:passWord )";
+			$statement = oci_parse($con,'INSERT INTO "LIBRARYUSER" VALUES (:card_number,:name,:email,:phonenumber,:passWord )');
 			oci_bind_by_name($statement,':card_number',$cardNumber);
 			oci_bind_by_name($statement, ':name', $name);
-			oci_bind_by_name($statement,':department',$department);
+			oci_bind_by_name($statement, ':email', $email);
+            oci_bind_by_name($statement, ':phonenumber', $phonenumber);
+			// oci_bind_by_name($statement,':department',$department);
 			oci_bind_by_name($statement,':password', $password);
 			$resul = oci_execute($statement,OCI_COMMIT_ON_SUCCESS);
 		    oci_free_statement($statement);  

@@ -62,7 +62,10 @@
                             <input type = "text" placeholder="Name" name = "Name" />
                             </li>
                             <li>
-                              <input type = "text" placeholder="Department" name = "Department" />
+                              <input type = "text" placeholder="Email" name = "Email" />
+                            </li>
+                             <li>
+                              <input type = "text" placeholder="Phonenumber" name = "Phonenumber" />
                             </li>
                         <li>
                             <input type="submit" value="Sign Up" class="button" />
