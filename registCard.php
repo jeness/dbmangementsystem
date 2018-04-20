@@ -1,5 +1,6 @@
 <?php
-	$con = oci_connect('YYU', '31415Zhang', 'oracle.cise.ufl.edu:1521/orcl');
+    include 'dbinfo.php';
+	$con = oci_connect($username, $password, $connection_string);
 	session_start();
 	if (!$con)
 	{
