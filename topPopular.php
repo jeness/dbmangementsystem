@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('UTC');
+
   include 'dbinfo.php';
   $con = oci_connect($username, $password, $connection_string);
   if (!$con)
@@ -31,10 +33,10 @@ $result = oci_execute($readingdays);
   {
     $count = $count + 1;
     // $topreadday = $row["BORROWDATETIME"]->format('Y-m-d'); //原始版本
-    // $dateandtime=new DateTime($row["BORROWDATETIME"]);
-     // $topreadday =$dateandtime->format('Y-m-d');
-    $topreadday=DateTime::createFromFormat('Y-m-d',$row["BORROWDATETIME"]); 
-     // $topreadday=date_format($dateandtime,'Y-m-d');
+   
+    // $topreadday=$row["BORROWDATETIME"]; //workable, but ugly timestamp
+    // var_dump($row["BORROWDATETIME"]);
+    $topreadday = DateTime::createFromFormat("d#M#y H#i#s*A", $row["BORROWDATETIME"])->format('Y-m-d');
   }
 ?>
 
