@@ -16,10 +16,10 @@
   //       where rownum =1";
   // $res = mysql_query($readingdays);
 
-$readingdays=oci_parse($con, 'select *
-        from (select borrowdate, count(*) as frequency
-          from borrow
-        group by borrowdate
+$readingdays=oci_parse($con, 'SELECT *
+        from (select "BORROWDATETIME", count(*) as frequency
+          from "CHECKOUTRECORD"
+        group by "BORROWDATETIME"
         order by count(*) desc)
         where rownum =1');
 $result = oci_execute($readingdays);
@@ -30,7 +30,11 @@ $result = oci_execute($readingdays);
   while($row = oci_fetch_array($readingdays))
   {
     $count = $count + 1;
-    $topreadday = $row['borrowdate']->format('Y-m-d');
+    // $topreadday = $row["BORROWDATETIME"]->format('Y-m-d'); //原始版本
+    // $dateandtime=new DateTime($row["BORROWDATETIME"]);
+     // $topreadday =$dateandtime->format('Y-m-d');
+    $topreadday=DateTime::createFromFormat('Y-m-d',$row["BORROWDATETIME"]); 
+     // $topreadday=date_format($dateandtime,'Y-m-d');
   }
 ?>
 
