@@ -7,17 +7,30 @@ date_default_timezone_set('UTC');
     {
     die('Could not connect: ' . oci_error());
     }
-  // some code
+ //-------------------number of books
+ $numofbooks=oci_parse($con,'SELECT count(*) as booknum from "BOOKWITHCATE"');
+ $r1 = oci_execute($numofbooks);
+ $row1 = oci_fetch_array($numofbooks);
+ $numofbooksresult=$row1["BOOKNUM"];
 
- // $readingdays = "
-  //       select *
-  //       from (select borrowdate, count(*) as frequency
-    //       from borrow
-    //    group by borrowdate
-    //    order by count(*) desc)
-  //       where rownum =1";
-  // $res = mysql_query($readingdays);
+ //-------------------Subjects rank  
+$ranksub=oci_parse($con,'SELECT * from(select "SUBJECT" as sub111, count(bibnum) as booknum from "BOOKWITHCATE"
+group by "SUBJECT" 
+order by count("SUBJECT") desc)
+where rownum<=30 and "SUBJECT" is not null;
+');
+$r2 = oci_execute($numofbooks);
+ $count1 = 0;
+ while($row2 = oci_fetch_array($numofbooks)){
+   $count1 = $count1 + 1;
+    $SRsubject=$row2["SUB111"];
+    $SRbooknum=$row2["BOOKNUM"];
+    var_dump($SRsubject);
+    var_dump($SRbooknum);
+ }
 
+
+//--------------------frequency
 $readingdays=oci_parse($con, 'SELECT *
         from (select "BORROWDATETIME", count(*) as frequency
           from "CHECKOUTRECORD"
@@ -26,18 +39,18 @@ $readingdays=oci_parse($con, 'SELECT *
         where rownum =1');
 $result = oci_execute($readingdays);
 
-
- // echo $admin;
   $count = 0;
   while($row = oci_fetch_array($readingdays))
   {
     $count = $count + 1;
-    // $topreadday = $row["BORROWDATETIME"]->format('Y-m-d'); //原始版本
+    // $topreadday = $row["BORROWDATETIME"]->format('Y-m-d'); //origin
    
     // $topreadday=$row["BORROWDATETIME"]; //workable, but ugly timestamp
     // var_dump($row["BORROWDATETIME"]);
     $topreadday = DateTime::createFromFormat("d#M#y H#i#s*A", $row["BORROWDATETIME"])->format('Y-m-d');
+    $topreaddayfre = $row["FREQUENCY"];
   }
+  //---------------------
 ?>
 
 <!DOCTYPE html>
@@ -244,6 +257,12 @@ $result = oci_execute($readingdays);
 
       <div id="file" class="form-action show">
 		<h1>Special Informations:</h1>
+        <ul>
+        <li style = "font-size: 24px;">Total number of books in library:</li>
+        <h3>
+       <?php echo $numofbooksresult;?>
+       </h3>
+       </ul>
 			 <ul>
 				<li style = "font-size: 24px;">Monthly rank:</li>
 
@@ -252,8 +271,15 @@ $result = oci_execute($readingdays);
 				<li style = "font-size: 24px;">Top reading days</li>
 			   <h3>
 			 	<?php echo $topreadday;?>
+        
 			   </h3>
 			 </ul>
+       <ul>
+        <li style = "font-size: 24px;">Frequency</li>
+        <h3>
+       <?php echo $topreaddayfre;?>
+       </h3>
+       </ul>
              <ul>
 				<li style = "font-size: 24px;">Peak hours</li>
 
