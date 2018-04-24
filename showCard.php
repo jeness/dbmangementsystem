@@ -230,11 +230,6 @@ form input[type=text_long] {
 }
 </style>
 <?php
-// 	$con = mysql_connect("localhost","root","");
-// 	if (!$con)
-// 	{
-// 	  die('Could not connect: ' . mysql_error());
-// 	}
   include 'dbinfo.php';
   $con = oci_connect($username, $password, $connection_string);
 	if (!$con)
@@ -252,7 +247,6 @@ form input[type=text_long] {
 // 		and borrow.return_date = 0
 // 	";
 	//echo $sqlQuery;
-// 	$result = mysql_query($sqlQuery);
 	$checkuser=oci_parse($con,'SELECT * FROM borrow where US_ID = (:userid)');
 	oci_bind_by_name($checkuser, ":userid",$cardNumber);
 	$result = oci_execute($checkuser);
