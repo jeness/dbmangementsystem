@@ -5,16 +5,12 @@
   {
     die('Could not connect: ' . oci_error());
   }
-  // mysql_select_db("my_db", $con);
+ 
 session_start();
   $Username = $_GET['username'];
   $Password = $_GET['password'];
 
-  // $admin = mysql_query("
-  //       select *
-  //       from admin
-  //       where admin.username = \"" .$Username. "\"
-  //   ");
+  
   $adminstatement = oci_parse($con, 'select * from "ADMINUSER" where "ADMINUSER".AD_ID = (:Username)');
   oci_bind_by_name($adminstatement,":Username",$Username);
   $result = oci_execute($adminstatement);
