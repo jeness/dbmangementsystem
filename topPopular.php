@@ -90,7 +90,7 @@ $result = oci_execute($readingdays);
           Top 50 Popular Authors
         </h1>
         <?php
-        $rankauthor=oci_parse($con,'SELECT *from(select author,count(borrowdatetime) as frequency from(
+        $rankauthor=oci_parse($con,'SELECT rownum as rank, author, frequency from(select author,count(borrowdatetime) as frequency from(
         select author, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
         where bookwithcate.BIBNUM=checkoutrecord.bibnum)
         group by  author
@@ -125,7 +125,7 @@ $result = oci_execute($readingdays);
 
       <div id="book"  class="form-action hide">
           <h1>
-		    Top 100 Popular Books
+		    Top 50 Popular Books
 		  </h1>
       <?php
       $rankbook = oci_parse($con, 'SELECT rownum as rank,title,frequency from (select title,count(borrowdatetime) as frequency from(
@@ -133,7 +133,7 @@ $result = oci_execute($readingdays);
       where bookwithcate.BIBNUM=checkoutrecord.bibnum)
       group by bib ,title
       order by count(borrowdatetime) desc)
-      where rownum<=100'
+      where rownum<=50'
       );
       $resultrankbook=oci_execute($rankbook);
       $nrows = oci_fetch_all($rankbook, $results1);
@@ -173,7 +173,7 @@ $result = oci_execute($readingdays);
 // where rownum<=30 and subject is not null
 //       ');
 
-$ranksub=oci_parse($con,'SELECT * from (select subject,count(borrowdatetime) as frequency from(
+$ranksub=oci_parse($con,'SELECT rownum as rank, subject, frequency from (select subject,count(borrowdatetime) as frequency from(
 select subject, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
 where bookwithcate.BIBNUM=checkoutrecord.bibnum)
 group by bib ,subject
