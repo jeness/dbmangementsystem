@@ -6,7 +6,6 @@
     die('Could not connect: ' . oci_error());
     }
 
-  // mysql_select_db("my_db", $con);
 ?>
 
 <!DOCTYPE html>
