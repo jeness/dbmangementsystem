@@ -6,7 +6,6 @@
 	{
 	  die('Could not connect: ' . oci_error());
 	}
-	// mysql_select_db("my_db", $con);
 
 	$cardNumber = $_GET['CardNumber'];
 	$name 		= $_GET['Name'];
@@ -14,11 +13,7 @@
 	$email = $_GET['Email'];
 	$phonenumber = $_GET['Phonenumber'];
 	$password 	= $_GET['PassWord'];
-	// $searchCard = "
-	// 	select *
-	// 	from card
-	// 	where card.card_number = \"" .$cardNumber.
-	// 	"\"";
+	
 	$statementselect = oci_parse($con,'select *
 		from "LIBRARYUSER"
 		where "LIBRARYUSER".user_id = (:cardNumber)');
@@ -45,7 +40,6 @@
 		// 	insert into card
 		// 	values (\"" .$cardNumber. "\", \"" .$name. "\", \"" .$department. "\", \"" .$password. "\")
 		// ";
-			// $query = mysql_query($sqlQuery);
 			// $sqlQuery = "insert into card(card_number, name, department, password) values(:card_number,:name,:department,:passWord )";
 			$statement = oci_parse($con,'INSERT INTO "LIBRARYUSER" VALUES (:card_number,:name,:email,:phonenumber,:passWord )');
 			oci_bind_by_name($statement,':card_number',$cardNumber);
@@ -57,7 +51,6 @@
 			$resul = oci_execute($statement,OCI_COMMIT_ON_SUCCESS);
 		    oci_free_statement($statement);  
 		    // if(oci_num_rows){  
-      //       echo "插入成功";  
       // 	    }  
 		//echo $sqlQuery;
 		
