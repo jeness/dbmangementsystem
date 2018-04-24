@@ -29,14 +29,26 @@ $p = 1;
 $x = $_GET["yearstart"];
 $y = $_GET["yearend"];
 $z = $_GET["bookname"];
-
+$w = $_GET["authorname"];
+if (empty($x)) $x = 0;
+if (empty($y)) $y = 2019;
 
 	// $sql = "select * 
 	// 			from "BOOKWITHCATE"
 	// 			where year between ".$x." and ".$y.$order;
-  $yearsql = oci_parse($con,'SELECT bibnum,title,itemcount FROM bookwithcate WHERE "PUBLICATIONYEAR">=(:startyear) AND "PUBLICATIONYEAR"<=(:endyear) ORDER BY "PUBLICATIONYEAR"');
+if(empty($w)){
+
+}
+else if (empty($z)){
+
+
+}
+else $yearsql = oci_parse($con,'SELECT bibnum,title,itemcount FROM bookwithcate WHERE "PUBLICATIONYEAR">=(:startyear) AND "PUBLICATIONYEAR"<=(:endyear) AND "TITLE" = (:bookname) AND "AUTHOR" = (:authorname) ORDER BY "PUBLICATIONYEAR"');
+  
   oci_bind_by_name($yearsql, ":startyear", $x);
   oci_bind_by_name($yearsql, ":endyear", $y);
+  oci_bind_by_name($yearsql, ":bookname",$z);
+  oci_bind_by_name($yearsql, ":authorname",$w);
   $resu=oci_execute($yearsql);
 	// $result= mysql_query($sql);
   echo "<h1 align=\"center\">

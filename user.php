@@ -507,10 +507,6 @@ form input[type=text_long] {
 						<li> <input type="text_long" name="authorname"> </li>
 					</ul>
 					<ul>
-						<li> Subject:	</li>
-						<li> <input type="text_long" name="kind"> </li>
-					</ul>
-					<ul>
 						<li> Title:	</li>
 						<li> <input type="text_long" name="bookname"> </li>
 					</ul>
