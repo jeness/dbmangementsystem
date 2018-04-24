@@ -1,11 +1,20 @@
 <?php
-	$con = mysql_connect("localhost","root","");
+	// $con = mysql_connect("localhost","root","");
+	// session_start();
+	// if (!$con)
+	// {
+	//   die('Could not connect: ' . mysql_error());
+	// }
+	// mysql_select_db("my_db", $con);
+
+
+	include 'dbinfo.php';
+	$con = oci_connect($username, $password, $connection_string);
 	session_start();
-	if (!$con)
-	{
-	  die('Could not connect: ' . mysql_error());
-	}
-	mysql_select_db("my_db", $con);
+    if (!$con)
+    {
+    die('Could not connect: ' . oci_error());
+    }
 
 	$url = $_GET['url'];
 	$cardNumber = $_GET['CardNumber'];

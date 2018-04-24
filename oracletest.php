@@ -1,5 +1,5 @@
 
-<!-- <?php
+<?php
 
 $conn = oci_connect('YYU', '31415Zhang', 'oracle.cise.ufl.edu:1521/orcl');
 if (!$conn) {
@@ -9,24 +9,47 @@ if (!$conn) {
 
 $stid = oci_parse($conn, 'SELECT * FROM bookwithcate where rownum<=5');
 $r = oci_execute($stid);
-oci_fetch_all($stid, $res);
-var_dump($res);
+// oci_fetch_all($stid, $res);
+// var_dump($res);
 
 
-$stid1 = oci_parse($conn, 'SELECT * FROM "CHECKOUTRECORD" where rownum<=5');
-$r = oci_execute($stid1);
-oci_fetch_all($stid1, $res1);
-var_dump($res1);
+$nrows = oci_fetch_all($stid, $results);
+if ($nrows > 0) {
+   echo "<table border=1> ";
+   echo "<tr> ";
+   foreach ($results as $key => $val) {
+      echo "<th>$key</th> ";
+   }
+   echo "</tr> ";
+
+   for ($i = 0; $i < $nrows; $i++) {
+      echo "<tr> ";
+      foreach ($results as $data) {
+         echo "<td>$data[$i]</td> ";
+      }
+      echo "</tr> ";
+   }
+   echo "</table> ";
+} else {
+   echo "No data found<br /> ";
+}
+echo "$nrows Records Selected<br /> ";
+
+
+// $stid1 = oci_parse($conn, 'SELECT * FROM "CHECKOUTRECORD" where rownum<=5');
+// $r = oci_execute($stid1);
+// oci_fetch_all($stid1, $res1);
+// var_dump($res1);
 
 // Free the statement identifier when closing the connection
 oci_free_statement($stid);
-oci_free_statement($stid1);
+// oci_free_statement($stid1);
 oci_close($conn);
 
-?> -->
+?> 
 
 
- <?php       
+ <!-- <?php       
         //设置绑定变量的取值
        $cardNumber="1234";
        $name = "101234";
@@ -65,4 +88,4 @@ oci_close($conn);
        //释放资源
        oci_free_statement($statement);
        oci_close($conn);
-       ?>
+       ?> -->

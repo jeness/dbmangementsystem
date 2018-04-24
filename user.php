@@ -507,15 +507,15 @@ form input[type=text_long] {
 						<li> <input type="text_long" name="authorname"> </li>
 					</ul>
 					<ul>
-						<li> Press:	</li>
+						<li> Publisher:	</li>
 						<li> <input type="text_long" name="press"> </li>
 					</ul>
 					<ul>
-						<li> Kind:	</li>
+						<li> Subject:	</li>
 						<li> <input type="text_long" name="kind"> </li>
 					</ul>
 					<ul>
-						<li> Bookname:	</li>
+						<li> Title:	</li>
 						<li> <input type="text_long" name="bookname"> </li>
 					</ul>
 					<ul>

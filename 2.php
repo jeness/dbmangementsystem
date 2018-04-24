@@ -5,62 +5,95 @@
 
 <?php
 session_start();
-$con = mysql_connect("localhost","root","");
-	if (!$con)
-	  {
-	  die('Could not connect: ' . mysql_error());
-	  }
+// $con = mysql_connect("localhost","root","");
+// 	if (!$con)
+// 	  {
+// 	  die('Could not connect: ' . mysql_error());
+// 	  }
+  include 'dbinfo.php';
+$con = oci_connect($username, $password, $connection_string);
+  if (!$con)
+    {
+    die('Could not connect: ' . oci_error());
+    }
 	else echo "<script>alert('searched successfully!')</script>";
  
 	// some code
-	mysql_select_db("my_db", $con);
-	mysql_query("set CHARACTER SET utf8");
+	
+	// mysql_query("set CHARACTER SET utf8");
 	$url = $_SERVER['REQUEST_URI'];
 $p = 1;
-if ($_GET["orderby"] == "")
-	$order = " order by book_name";
-else $order = " order by ".$_GET["orderby"];
+// if ($_GET["orderby"] == "")
+// 	$order = " order by book_name";
+// else $order = " order by ".$_GET["orderby"];
 $x = $_GET["yearstart"];
 $y = $_GET["yearend"];
-	$sql = "select * 
-				from book
-				where year between ".$x." and ".$y.$order;
-	$result= mysql_query($sql);
+	// $sql = "select * 
+	// 			from "BOOKWITHCATE"
+	// 			where year between ".$x." and ".$y.$order;
+  $yearsql = oci_parse($con,'SELECT * FROM "BOOKWITHCATE" WHERE "PUBLICATIONYEAR">=(:startyear) AND "PUBLICATIONYEAR"<=(:endyear) ORDER BY "PUBLICATIONYEAR"');
+  oci_bind_by_name($yearsql, ":startyear", $x);
+  oci_bind_by_name($yearsql, ":endyear", $y);
+  $resu=oci_execute($yearsql);
+	// $result= mysql_query($sql);
   echo "<h1 align=\"center\">
           Library Database
         </h1>
           <div class=\"container\">
             <div class=\"flat-form_q\">";
               
-              echo "<div class = \"breathe-btn\"> The books searched</div>";
-	while($row = mysql_fetch_array($result))
-  {   
-  echo "<div id = \"login\" class=\"form-action show\">";
+  echo "<div class = \"breathe-btn\"> The books searched</div>";
+	// while($row = oci_fetch_all($resu))
+ //  {   
+ //    var_dump($row);
+ //  echo "<div id = \"login\" class=\"form-action show\">";
  
-  echo "<form action=\"userborrow.php\" method=\"get\">";
+ //  echo "<form action=\"userborrow.php\" method=\"get\">";
  
-  echo "<ul>";
+ //  echo "<ul>";
   
-  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">NO.";
-  echo $p."</li>";
-  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Book Number:</li>";
-  echo $row['book_id'];
-  $book_id_now = $row['book_id']; 
-  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Book Name:</li>";
-  echo iconv("UTF-8", "GB2312", $row['book_name']);
-  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Numbers In stock:</li>";
-  echo $row['stock'];
-  $CardNumber = $_SESSION['CardNumber'];
-  echo "<input type = \"hidden\" name = \"CardNumber\" value = $CardNumber \>";
-  echo "<input type = \"hidden\" name = \"BookNumber\" value = $book_id_now \>";
-  echo "<input type = \"hidden\" name = \"url\" value = $url \>";
-  echo "<input style = \"font-size :13px; \" type=\"submit\" value = \"borrow it\" class = \"button\">";
-  echo "</ul>";
-  echo "</form>";
-  echo "</div>";
-  $p++;
-  if ($p>50) break;
-  }
+ //  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">NO.";
+ //  echo $p."</li>";
+ //  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Book Number:</li>";
+ //  echo $row['BIBNUM'];
+ //  $book_id_now = $row['BIBNUM']; 
+ //  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Book Name:</li>";
+ //  echo iconv("UTF-8", "GB2312", $row['TITLE']);
+ //  echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Numbers In stock:</li>";
+ //  echo $row['ITEMCOUNT'];
+ //  $CardNumber = $_SESSION['US_ID'];
+ //  echo "<input type = \"hidden\" name = \"CardNumber\" value = $CardNumber \>";
+ //  echo "<input type = \"hidden\" name = \"BookNumber\" value = $book_id_now \>";
+ //  echo "<input type = \"hidden\" name = \"url\" value = $url \>";
+ //  echo "<input style = \"font-size :13px; \" type=\"submit\" value = \"borrow it\" class = \"button\">";
+ //  echo "</ul>";
+ //  echo "</form>";
+ //  echo "</div>";
+ //  $p++;
+ //  if ($p>50) break;
+ //  }
+$nrows = oci_fetch_all($yearsql, $results);
+if ($nrows > 0) {
+   echo "<table border=1> ";
+   echo "<tr> ";
+   foreach ($results as $key => $val) {
+      echo "<th>$key</th> ";
+   }
+   echo "</tr> ";
+
+   for ($i = 0; $i < $nrows; $i++) {
+      echo "<tr> ";
+      foreach ($results as $data) {
+         echo "<td>$data[$i]</td> ";
+      }
+      echo "</tr> ";
+   }
+   echo "</table> ";
+} else {
+   echo "No data found<br /> ";
+}
+echo "$nrows Records Selected<br /> ";
+
  
 $y = "'".$_GET["bookname"]."'";
 	$sql = "select * 
