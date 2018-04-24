@@ -614,6 +614,15 @@ form input[type=text_long] {
 
   </div>
 </div>
+<button id="btn">点击我 Tell me the total number of tuples!</button>
+    <script type="text/javascript">
+        $(function(){
+            $('#btn').click(function(){
+//                 alert('你点击了我');
+		    alert('The number is '+$numofbooksresult+$numofrecordsresult);
+            })
+        })
+    </script>
     <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 </body>
 </html>
