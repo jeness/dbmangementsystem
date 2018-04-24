@@ -514,6 +514,7 @@ form input[type=text_long] {
 						<li><input type="submit" value = "search" style=" font-size: 14px;"class = "button"></li>
 					</ul>
           <input type = "hidden" name = "CardNumber" value = "<?php echo $Username;?>"/>
+          <input type = "hidden" name = "password" value = "<?php echo $Password;?>" />
 				</form>
 			</div>
 
@@ -605,20 +606,18 @@ form input[type=text_long] {
 			<ul>
         <li style = "font-size: 24px;"><a href="http://our.library.com/popularperiodrank"> Popular Time Rank</a> </li>
 			</ul>
+
+      <h2>Tell me the total number of tuples!</h2>
+      <ul>
+        <li style = "font-size: 24px;"><a href="http://our.library.com/totaltuples"> Total Tuple Number</a> </li>
+      </ul>
+
 		</form>
 	</div>
 
   </div>
 </div>
-<button id="btn">点击我 Tell me the total number of tuples!</button>
-    <script type="text/javascript">
-        $(function(){
-            $('#btn').click(function(){
-//                 alert('你点击了我');
-		    alert('The number is '+$numofbooksresult+$numofrecordsresult);
-            })
-        })
-    </script>
+
     <script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
 </body>
 </html>

@@ -19,30 +19,19 @@
 	$url = $_GET['url'];
 	$cardNumber = $_GET['CardNumber'];
 	$bookNumber = $_GET['BookNumber'];
-	$borrowDate = date("Ymd");
-	$searchBook = " 	
-		select *
-		from book
-		where book_id = \"" .$bookNumber.
-		"\"";
-	$searchCard = "
-		select *
-		from card
-		where card.card_number = \"" .$cardNumber.
-		"\"";
+	$borrowDate = date('Y-m-d');
+	$returnDate = date('Y-m',mktime (0,0,0,date("m")+1,date("d")+1,date("Y")));
 
-	$queryStock = mysql_query($searchBook);
+	$searchBook = oci_parse($con,'select *
+        from bookwithcate
+        where "BIBNUM" = (:bookNumber)');
+    oci_bind_by_name($searchBook,":bookNumber",$bookNumber);
+    $queryStock = oci_execute($searchBook);
+
 	$countStock = 0;
-	while($row = mysql_fetch_array($queryStock))
+	while($row = oci_fetch_array($searchBook))
   	{
-  		$countStock = $row['stock'];
-  	}
-
-	$queryCard = mysql_query($searchCard);
-	$countCard = 0;
-	while($row = mysql_fetch_array($queryCard))
-  	{
-  		$countCard = $countCard + 1;
+  		$countStock = $row['ITEMCOUNT'];
   	}
 
    if ($countStock == 0) {
@@ -52,29 +41,48 @@
 		echo "</script>";
 	}
 	else {
-		$updateBook = "
-			update book
-			set stock = stock - 1
-			where book_id = \"" .$bookNumber. 
-		"\"";
-		mysql_query($updateBook);
+		$updateBook = oci_parse($con,'update "BOOKWITHCATE"
+        set "BOOKWITHCATE".ITEMCOUNT = "BOOKWITHCATE".ITEMCOUNT - 1
+        where "BOOKWITHCATE".BIBNUM = (:bookNumber)');
+        oci_bind_by_name($updateBook,":bookNumber",$bookNumber);
+        $queryUpdate = oci_execute($updateBook);
 
-		$searchBorrow = "
-			select *
-			from borrow
-		";
-		$queryBorrow = mysql_query($searchBorrow);
+		// $updateBook = "
+		// 	update book
+		// 	set stock = stock - 1
+		// 	where book_id = \"" .$bookNumber. 
+		// "\"";
+		// mysql_query($updateBook);
+
+		$searchBorrow = oci_parse($con,'select * from "borrow"');
+        $queryBorrow = oci_execute($searchBorrow);
+
+		// $searchBorrow = "
+		// 	select *
+		// 	from borrow
+		// ";
+		// $queryBorrow = mysql_query($searchBorrow);
 		$countBorrow = 1;
-		while($row = mysql_fetch_array($queryBorrow))
+		while($row = oci_fetch_array($searchBorrow))
 	  	{
 	  		$countBorrow = $countBorrow + 1;
 	  	}
-		$borrowBook = "
-			insert into borrow 
-			values (\"" .$countBorrow. "\", \"" .$bookNumber. "\", \"" .$cardNumber. "\", " .$borrowDate. "
-			, 0)";
-		//echo $borrowBook;
-		mysql_query($borrowBook);
+
+        $borrowBook = oci_parse($con,'INSERT INTO "borrow" VALUES (:bibnum,:borrowdatetime,:returndatetime,:US_ID)');
+			oci_bind_by_name($borrowBook,':bibnum',$bookNumber);
+			oci_bind_by_name($borrowBook, ':borrowdatetime', $borrowDate);
+			oci_bind_by_name($borrowBook, ':returndatetime', $returnDate);
+            oci_bind_by_name($borrowBook, ':US_ID', $cardNumber);
+			$resul = oci_execute($borrowBook,OCI_COMMIT_ON_SUCCESS);
+		    oci_free_statement($borrowBook);  
+		    // if(oci_num_rows){  
+
+		// $borrowBook = "
+		// 	insert into borrow 
+		// 	values (\"" .$countBorrow. "\", \"" .$bookNumber. "\", \"" .$cardNumber. "\", " .$borrowDate. "
+		// 	, 0)";
+		// //echo $borrowBook;
+		// mysql_query($borrowBook);
 		echo "<script>alert('Borrowed this book successfully!')</script>";
 		echo "<script language=\"javascript\">";
 		echo "document.location=\"".$url."\"";
