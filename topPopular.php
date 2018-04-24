@@ -73,9 +73,6 @@ $result = oci_execute($readingdays);
 
     <div class="flat-form">
       <ul class="tabs">
-         <!--  <li>
-              <a href="#file" class="active">Rank</a>
-          </li> -->
           <li>
               <a href="#author" class="active">AUTHOR</a>
           </li>
@@ -87,38 +84,7 @@ $result = oci_execute($readingdays);
           </li>
       </ul>
 
-    <!--   <div id="file" class="form-action show">
-		<h1>Special Informations:</h1>
-        <ul>
-        <li style = "font-size: 24px;">Total number of books in library:</li>
-        <h3>
-       <?php echo $numofbooksresult;?>
-       </h3>
-       </ul>
-			 <ul>
-				<li style = "font-size: 24px;">Monthly rank:</li>
 
-			 </ul>	
-			 <ul>
-				<li style = "font-size: 24px;">Top reading days</li>
-			   <h3>
-			 	<?php echo $topreadday;?>
-        
-			   </h3>
-			 </ul>
-       <ul>
-        <li style = "font-size: 24px;">Frequency</li>
-        <h3>
-       <?php echo $topreaddayfre;?>
-       </h3>
-       </ul>
-             <ul>
-				<li style = "font-size: 24px;">Peak hours</li>
-
-			 </ul>
-      </div> -->
-
-    
       <div id="author" class="form-action show">
         <h1>
           Top 50 Popular Authors
@@ -171,22 +137,24 @@ $result = oci_execute($readingdays);
       );
       $resultrankbook=oci_execute($rankbook);
       $nrows = oci_fetch_all($rankbook, $results1);
+      $p = 1;
       if ($nrows > 0) {
-         echo "<table border=1> ";
-         echo "<tr> ";
-         foreach ($results1 as $key => $val) {
-            echo "<th>$key</th> ";
-         }
-         echo "</tr> ";
+         // echo "<table border=1> ";
+         // echo "<tr> ";
+         // foreach ($results1 as $key => $val) {
+         //    echo "<th>$key</th> ";
+         // }
+         // echo "</tr> ";
 
-         for ($i = 0; $i < $nrows; $i++) {
-            echo "<tr> ";
-            foreach ($results1 as $data) {
-               echo "<td>$data[$i]</td> ";
-            }
-            echo "</tr> ";
-         }
-         echo "</table> ";
+         // for ($i = 0; $i < $nrows; $i++) {
+         //    echo "<tr> ";
+         //    foreach ($results1 as $data) {
+         //       echo "<td>$data[$i]</td> ";
+         //    }
+         //    echo "</tr> ";
+         // }
+         // echo "</table> ";
+        echo "<li style = \"font-size:18px; font-weight:bold;"
       } else {
          echo "No data found<br /> ";
       }
