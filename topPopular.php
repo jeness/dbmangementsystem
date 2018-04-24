@@ -128,7 +128,7 @@ $result = oci_execute($readingdays);
 		    Top 100 Popular Books
 		  </h1>
       <?php
-      $rankbook = oci_parse($con, 'SELECT * from (select title,count(borrowdatetime) as frequency from(
+      $rankbook = oci_parse($con, 'SELECT rownum as rank,title,frequency from (select title,count(borrowdatetime) as frequency from(
       select title, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
       where bookwithcate.BIBNUM=checkoutrecord.bibnum)
       group by bib ,title
@@ -139,23 +139,21 @@ $result = oci_execute($readingdays);
       $nrows = oci_fetch_all($rankbook, $results1);
       $p = 1;
       if ($nrows > 0) {
-         // echo "<table border=1> ";
-         // echo "<tr> ";
-         // foreach ($results1 as $key => $val) {
-         //    echo "<th>$key</th> ";
-         // }
-         // echo "</tr> ";
-
-         // for ($i = 0; $i < $nrows; $i++) {
-         //    echo "<tr> ";
-         //    foreach ($results1 as $data) {
-         //       echo "<td>$data[$i]</td> ";
-         //    }
-         //    echo "</tr> ";
-         // }
-         // echo "</table> ";
-        echo "<li style = \"font-size:18px; font-weight:bold;"
-      } else {
+          echo "<table border=1> ";
+          echo "<tr> ";
+          foreach ($results1 as $key => $val) {
+             echo "<th>$key</th> ";
+          }
+          echo "</tr> ";
+          for ($i = 0; $i < $nrows; $i++) {
+             echo "<tr> ";
+             foreach ($results1 as $data) {
+                echo "<td>$data[$i]</td> ";
+             }
+             echo "</tr> ";
+          }
+          echo "</table> ";
+       } else {
          echo "No data found<br /> ";
       }
       echo "$nrows Records Selected<br /> ";
