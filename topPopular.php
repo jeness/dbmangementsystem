@@ -14,20 +14,6 @@ date_default_timezone_set('UTC');
  $numofbooksresult=$row1["BOOKNUM"];
 
  //-------------------Subjects rank  
-$ranksub=oci_parse($con,'SELECT * from(select "SUBJECT" as sub111, count(bibnum) as booknum from "BOOKWITHCATE"
-group by "SUBJECT" 
-order by count("SUBJECT") desc)
-where rownum<=30 and "SUBJECT" is not null;
-');
-$r2 = oci_execute($numofbooks);
- $count1 = 0;
- while($row2 = oci_fetch_array($numofbooks)){
-   $count1 = $count1 + 1;
-    $SRsubject=$row2["SUB111"];
-    $SRbooknum=$row2["BOOKNUM"];
-    var_dump($SRsubject);
-    var_dump($SRbooknum);
- }
 
 
 //--------------------frequency
@@ -37,6 +23,7 @@ $readingdays=oci_parse($con, 'SELECT *
         group by "BORROWDATETIME"
         order by count(*) desc)
         where rownum =1');
+
 $result = oci_execute($readingdays);
 
   $count = 0;
@@ -75,7 +62,191 @@ $result = oci_execute($readingdays);
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 
-  <style type="text/css">
+  
+</head>
+<body>
+
+<div class="container">
+    <h1 align="center">
+      Library Database
+    </h1>
+
+    <div class="flat-form">
+      <ul class="tabs">
+          <li>
+              <a href="#file" class="active">Rank</a>
+          </li>
+          <li>
+              <a href="#author">AUTHOR</a>
+          </li>
+          <li>
+              <a href="#book">BOOK</a>
+          </li>
+          <li>
+              <a href="#subject">SUBJECT</a>
+          </li>
+      </ul>
+
+      <div id="file" class="form-action show">
+		<h1>Special Informations:</h1>
+        <ul>
+        <li style = "font-size: 24px;">Total number of books in library:</li>
+        <h3>
+       <?php echo $numofbooksresult;?>
+       </h3>
+       </ul>
+			 <ul>
+				<li style = "font-size: 24px;">Monthly rank:</li>
+
+			 </ul>	
+			 <ul>
+				<li style = "font-size: 24px;">Top reading days</li>
+			   <h3>
+			 	<?php echo $topreadday;?>
+        
+			   </h3>
+			 </ul>
+       <ul>
+        <li style = "font-size: 24px;">Frequency</li>
+        <h3>
+       <?php echo $topreaddayfre;?>
+       </h3>
+       </ul>
+             <ul>
+				<li style = "font-size: 24px;">Peak hours</li>
+
+			 </ul>
+      </div>
+
+    
+      <div id="author" class="form-action hide">
+        <h1>
+          Top 50 Popular Authors
+        </h1>
+        <?php
+        $rankauthor=oci_parse($con,'SELECT from(select author,count(borrowdatetime) as frequency from(
+        select author, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
+        where bookwithcate.BIBNUM=checkoutrecord.bibnum)
+        group by  author
+        order by count(borrowdatetime) desc)
+        where rownum<=50 and author is not null'
+        );
+        $resultrankauthor = oci_execute($rankauthor);
+        $nrows = oci_fetch_all($rankauthor, $results2);
+      if ($nrows > 0) {
+         echo "<table border=1> ";
+         echo "<tr> ";
+         foreach ($results2 as $key => $val) {
+            echo "<th>$key</th> ";
+         }
+         echo "</tr> ";
+
+         for ($i = 0; $i < $nrows; $i++) {
+            echo "<tr> ";
+            foreach ($results2 as $data) {
+               echo "<td>$data[$i]</td> ";
+            }
+            echo "</tr> ";
+         }
+         echo "</table> ";
+      } else {
+         echo "No data found<br /> ";
+      }
+      echo "$nrows Records Selected<br /> ";
+
+        ?>
+      </div>
+
+      <div id="book"  class="form-action hide">
+          <h1>
+		    Top 100 Popular Books
+		  </h1>
+      <?php
+      $rankbook = oci_parse($con, 'SELECT * from (select title,count(borrowdatetime) as frequency from(
+      select title, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
+      where bookwithcate.BIBNUM=checkoutrecord.bibnum)
+      group by bib ,title
+      order by count(borrowdatetime) desc)
+      where rownum<=100'
+      );
+      $resultrankbook=oci_execute($rankbook);
+      $nrows = oci_fetch_all($rankbook, $results1);
+      if ($nrows > 0) {
+         echo "<table border=1> ";
+         echo "<tr> ";
+         foreach ($results1 as $key => $val) {
+            echo "<th>$key</th> ";
+         }
+         echo "</tr> ";
+
+         for ($i = 0; $i < $nrows; $i++) {
+            echo "<tr> ";
+            foreach ($results1 as $data) {
+               echo "<td>$data[$i]</td> ";
+            }
+            echo "</tr> ";
+         }
+         echo "</table> ";
+      } else {
+         echo "No data found<br /> ";
+      }
+      echo "$nrows Records Selected<br /> ";
+      ?>
+
+        
+      </div>
+
+      <div id="subject" class="form-action hide">
+        <h1>
+		  Top 30 Popular Subjects
+		</h1>
+<?php
+//       $ranksub=oci_parse($con,'SELECT * from(select subject, count(bibnum) as frequency from bookwithcate
+// group by subject 
+// order by count(subject) desc)
+// where rownum<=30 and subject is not null
+//       ');
+
+$ranksub=oci_parse($con,'SELECT * from (select subject,count(borrowdatetime) as frequency from(
+select subject, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
+where bookwithcate.BIBNUM=checkoutrecord.bibnum)
+group by bib ,subject
+order by count(borrowdatetime) desc)
+where rownum<=30');
+
+
+      $resultranksub=oci_execute($ranksub);
+      $nrows = oci_fetch_all($ranksub, $results);
+      if ($nrows > 0) {
+         echo "<table border=1> ";
+         echo "<tr> ";
+         foreach ($results as $key => $val) {
+            echo "<th>$key</th> ";
+         }
+         echo "</tr> ";
+
+         for ($i = 0; $i < $nrows; $i++) {
+            echo "<tr> ";
+            foreach ($results as $data) {
+               echo "<td>$data[$i]</td> ";
+            }
+            echo "</tr> ";
+         }
+         echo "</table> ";
+      } else {
+         echo "No data found<br /> ";
+      }
+      echo "$nrows Records Selected<br /> ";
+      ?>
+      </div>
+      
+    </div>
+</div>
+<script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+</body>
+
+
+<style type="text/css">
   .file{position:absolute; top:130px; right:360px; height:40px; filter:alpha(opacity:1);opacity: 0;width:80px }
     body {
       background: #292929;
@@ -231,89 +402,7 @@ $result = oci_execute($readingdays);
       color: #e74c3c;
     }
     </style>
-</head>
-<body>
 
-<div class="container">
-    <h1 align="center">
-      Library Database
-    </h1>
-
-    <div class="flat-form">
-      <ul class="tabs">
-          <li>
-              <a href="#file" class="active">Rank</a>
-          </li>
-          <li>
-              <a href="#author">AUTHOR</a>
-          </li>
-          <li>
-              <a href="#book">BOOK</a>
-          </li>
-          <li>
-              <a href="#subject">SUBJECT</a>
-          </li>
-      </ul>
-
-      <div id="file" class="form-action show">
-		<h1>Special Informations:</h1>
-        <ul>
-        <li style = "font-size: 24px;">Total number of books in library:</li>
-        <h3>
-       <?php echo $numofbooksresult;?>
-       </h3>
-       </ul>
-			 <ul>
-				<li style = "font-size: 24px;">Monthly rank:</li>
-
-			 </ul>	
-			 <ul>
-				<li style = "font-size: 24px;">Top reading days</li>
-			   <h3>
-			 	<?php echo $topreadday;?>
-        
-			   </h3>
-			 </ul>
-       <ul>
-        <li style = "font-size: 24px;">Frequency</li>
-        <h3>
-       <?php echo $topreaddayfre;?>
-       </h3>
-       </ul>
-             <ul>
-				<li style = "font-size: 24px;">Peak hours</li>
-
-			 </ul>
-      </div>
-
-    
-      <div id="author" class="form-action hide">
-        <h1>
-          Top 50 Popular Authors
-        </h1>
-
-      </div>
-
-      <div id="book"  class="form-action hide">
-          <h1>
-		    Top 100 Popular Books
-		  </h1>
-          
-
-        
-      </div>
-
-      <div id="subject" class="form-action hide">
-        <h1>
-		  Top 30 Popular Subjects
-		</h1>
-
-      </div>
-      
-    </div>
-</div>
-<script class="cssdeck" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-</body>
 </html>
 
 <!--@import url(http://fonts.googleapis.com/css?family=Roboto:100);
