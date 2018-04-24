@@ -230,23 +230,53 @@ form input[type=text_long] {
 }
 </style>
 <?php
-	$con = mysql_connect("localhost","root","");
+// 	$con = mysql_connect("localhost","root","");
+// 	if (!$con)
+// 	{
+// 	  die('Could not connect: ' . mysql_error());
+// 	}
+  include 'dbinfo.php';
+  $con = oci_connect($username, $password, $connection_string);
 	if (!$con)
-	{
-	  die('Could not connect: ' . mysql_error());
-	}
+	  {
+	  die('Could not connect: ' . oci_error());
+	  }
 	else echo "<script>alert('searched successfully!')</script>";
-	mysql_select_db("my_db", $con);
+	
 		$cardNumber = "'".$_GET['CardNumber']."'";
-	$sqlQuery = " 	
-		select *
-		from book, borrow
-		where borrow.card_Number = " .$cardNumber.
-		" and book.book_id = borrow.book_id
-		and borrow.return_date = 0
-	";
+// 	$sqlQuery = " 	
+// 		select *
+// 		from book, borrow
+// 		where borrow.card_Number = " .$cardNumber.
+// 		" and book.book_id = borrow.book_id
+// 		and borrow.return_date = 0
+// 	";
 	//echo $sqlQuery;
-	$result = mysql_query($sqlQuery);
+// 	$result = mysql_query($sqlQuery);
+	$checkuser=oci_parse($con,'SELECT * FROM borrow where US_ID = (:userid)');
+	oci_bind_by_name($checkuser, ":userid",$cardNumber);
+	$result = oci_execute($checkuser);
+ 	 $nrows = oci_fetch_all($checkuser, $results);
+      if ($nrows > 0) {
+         echo "<table border=1> ";
+         echo "<tr> ";
+         foreach ($results as $key => $val) {
+            echo "<th>$key</th> ";
+         }
+         echo "</tr> ";
+         for ($i = 0; $i < $nrows; $i++) {
+            echo "<tr> ";
+            foreach ($results as $data) {
+               echo "<td>$data[$i]</td> ";
+            }
+            echo "</tr> ";
+         }
+         echo "</table> ";
+      } else {
+         echo "No data about the user is found.<br /> ";
+      }
+      echo "$nrows Records Selected<br /> ";
+  	
   /*
   while($row = mysql_fetch_array($result))
   {
@@ -273,7 +303,7 @@ $p = 1;
             <div class=\"flat-form_q\">";
               
               echo "<div class = \"breathe-btn\"> The books This card borrow</div>";
-	while($row = mysql_fetch_array($result))
+	while($row = oci_fetch_array($result))
   {   
   echo "<div id = \"login\" class=\"form-action show\">";
  
