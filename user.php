@@ -527,13 +527,13 @@ form input[type=text_long] {
 
 	<div id="register" class="form-action hide">
 		<form action="showCard.php" method="get" />
-			<h2>Your Card Information:</h2>
+			<h2>Your Account Information:</h2>
 			<ul>
-				<li style = "font-size: 24px;" > Card Number: </li> 
+				<li style = "font-size: 24px;" > UserID: </li> 
 				<h3> <?php echo $Username;?> </h3>
 			</ul>
 			<ul>
-				<li style = "font-size: 24px;">Name : </li>
+				<li style = "font-size: 24px;">Name: </li>
 			</ul>
 			<ul>
 			 <h3>
