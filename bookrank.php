@@ -73,63 +73,67 @@ $result = oci_execute($readingdays);
 
     <div class="flat-form">
       <ul class="tabs">
-         <!--  <li>
-              <a href="#file" class="active">Rank</a>
-          </li> -->
           <li>
-              <a href="#author" class="active">AUTHOR</a>
+              <a href="#subject" class="active">Subject</a>
           </li>
           <li>
-              <a href="#book">BOOK</a>
+              <a href="#author" >Author</a>
           </li>
           <li>
-              <a href="#subject">SUBJECT</a>
+              <a href="#publisher">Publisher</a>
+          </li>
+          <li>
+              <a href="#pubyear">Year</a>
           </li>
       </ul>
 
-    <!--   <div id="file" class="form-action show">
-		<h1>Special Informations:</h1>
-        <ul>
-        <li style = "font-size: 24px;">Total number of books in library:</li>
-        <h3>
-       <?php echo $numofbooksresult;?>
-       </h3>
-       </ul>
-			 <ul>
-				<li style = "font-size: 24px;">Monthly rank:</li>
+      <div id="subject" class="form-action show">
+		  <h1>Books Subject Rank:</h1>
+      <?php
+        $rankauthor=oci_parse($con,'SELECT * from(select subject, count(bibnum) as booknum from bookwithcate
+        group by subject 
+        order by count(subject) desc)
+        where rownum<=30 and subject is not null
+        '
+        );
+        $resultrankauthor = oci_execute($rankauthor);
+        $nrows = oci_fetch_all($rankauthor, $results2);
 
-			 </ul>	
-			 <ul>
-				<li style = "font-size: 24px;">Top reading days</li>
-			   <h3>
-			 	<?php echo $topreadday;?>
-        
-			   </h3>
-			 </ul>
-       <ul>
-        <li style = "font-size: 24px;">Frequency</li>
-        <h3>
-       <?php echo $topreaddayfre;?>
-       </h3>
-       </ul>
-             <ul>
-				<li style = "font-size: 24px;">Peak hours</li>
+      if ($nrows > 0) {
+         echo "<table border=1> ";
+         echo "<tr> ";
+         foreach ($results2 as $key => $val) {
+            echo "<th>$key</th> ";
+         }
+         echo "</tr> ";
 
-			 </ul>
-      </div> -->
+         for ($i = 0; $i < $nrows; $i++) {
+            echo "<tr> ";
+            foreach ($results2 as $data) {
+               echo "<td>$data[$i]</td> ";
+            }
+            echo "</tr> ";
+         }
+         echo "</table> ";
+      } else {
+         echo "No data found<br /> ";
+      }
+      echo "$nrows Records Selected<br /> ";
+
+        ?>
+      </div>
 
     
-      <div id="author" class="form-action show">
+      <div id="author" class="form-action hide">
         <h1>
-          Top 50 Popular Authors
+          Author's production rank
         </h1>
         <?php
-        $rankauthor=oci_parse($con,'SELECT *from(select author,count(borrowdatetime) as frequency from(
-        select author, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
-        where bookwithcate.BIBNUM=checkoutrecord.bibnum)
-        group by  author
-        order by count(borrowdatetime) desc)
-        where rownum<=50 and author is not null'
+        $rankauthor=oci_parse($con,'SELECT * from(select author, count(bibnum)as booknum from bookwithcate
+          group by author 
+          order by count(bibnum) desc)
+          where rownum<=30 and author is not null 
+          '
         );
         $resultrankauthor = oci_execute($rankauthor);
         $nrows = oci_fetch_all($rankauthor, $results2);
@@ -157,17 +161,16 @@ $result = oci_execute($readingdays);
         ?>
       </div>
 
-      <div id="book"  class="form-action hide">
-          <h1>
-		    Top 100 Popular Books
+      <div id="publisher"  class="form-action hide">
+      <h1>
+		    Publisher's production rank
 		  </h1>
       <?php
-      $rankbook = oci_parse($con, 'SELECT * from (select title,count(borrowdatetime) as frequency from(
-      select title, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
-      where bookwithcate.BIBNUM=checkoutrecord.bibnum)
-      group by bib ,title
-      order by count(borrowdatetime) desc)
-      where rownum<=100'
+      $rankbook = oci_parse($con, 'SELECT * from(select publisher ,count(bibnum) as booknum from bookwithcate
+        group by publisher
+        order by count(bibnum) desc)
+        where rownum<=30 and publisher is not null
+        '
       );
       $resultrankbook=oci_execute($rankbook);
       $nrows = oci_fetch_all($rankbook, $results1);
@@ -196,9 +199,9 @@ $result = oci_execute($readingdays);
         
       </div>
 
-      <div id="subject" class="form-action hide">
-        <h1>
-		  Top 30 Popular Subjects
+      <div id="pubyear" class="form-action hide">
+      <h1>
+		  Most production year rank
 		</h1>
 <?php
 //       $ranksub=oci_parse($con,'SELECT * from(select subject, count(bibnum) as frequency from bookwithcate
@@ -207,12 +210,11 @@ $result = oci_execute($readingdays);
 // where rownum<=30 and subject is not null
 //       ');
 
-$ranksub=oci_parse($con,'SELECT * from (select subject,count(borrowdatetime) as frequency from(
-select subject, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
-where bookwithcate.BIBNUM=checkoutrecord.bibnum)
-group by bib ,subject
-order by count(borrowdatetime) desc)
-where rownum<=30');
+$ranksub=oci_parse($con,'SELECT* from(select publicationyear ,count(  bibnum) as booknum from bookwithcate
+        group by publicationyear
+        order by count(bibnum) desc)
+        where rownum<=30 and publicationyear is not null
+        ');
 
 
       $resultranksub=oci_execute($ranksub);

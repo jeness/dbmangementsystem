@@ -71,7 +71,7 @@ date_default_timezone_set('UTC');
         </h3>
       </ul>
       <ul>
-        <li style = "font-size: 24px;"> <a href="http://our.library.com/bookrank">Popular Books Rank</a> </li>
+        <li style = "font-size: 24px;"> <a href="http://our.library.com/bookrank">Stock Information</a> </li>
       </ul>
 
       <h2>Checkout Record Analysis 2016</h2>

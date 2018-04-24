@@ -44,17 +44,17 @@
         </embed>
         <div class="flat-form" >
             <ul class="tabs">
-                <li>
+                <!-- <li>
                     <a href="#login" class="active">&nbsp Admin</a>
+                </li> -->
+                <li>
+                    <a href="#register" >&nbsp Register &nbsp</a>
                 </li>
                 <li>
-                    <a href="#register">&nbsp Register &nbsp</a>
-                </li>
-                <li>
-                    <a href="#reset">&nbsp User &nbsp</a>
+                    <a href="#reset" class="active">&nbsp User &nbsp</a>
                 </li>
             </ul>
-            <div id="login" class="form-action show">
+<!--             <div id="login" class="form-action show">
                 <h1>Library System</h1>
                 <h3>
                     Administer Access
@@ -72,7 +72,7 @@
                         </li>
                     </ul>
                 </form>
-            </div>
+            </div> -->
             <!--/#login.form-action-->
             <div id="register" class="form-action hide">
                 <h1>Register</h1>
@@ -95,8 +95,8 @@
                 </form>
             </div>
             <!--/#register.form-action-->
-            <div id="reset" class="form-action hide">
-                <h1>Login</h1>
+            <div id="reset" class="form-action show">
+                <h1>Library System </h1>
                 <h3>
                   User Access
                 </h3>

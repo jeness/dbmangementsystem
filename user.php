@@ -195,7 +195,8 @@ form input[type=password] {
 
   $searchCard = oci_parse($con,'select *
         from "borrow"
-        where "borrow".US_ID = (:Username)');
+        where "borrow".US_ID = (:Username)
+        and "borrow"."returndatetime" = "borrow"."borrowdatetime"');
   oci_bind_by_name($searchCard,":Username",$Username);
   $result = oci_execute($searchCard);
 
@@ -208,15 +209,6 @@ form input[type=password] {
   while($row = oci_fetch_array($searchCard))
   {
     $total = $total + 1;
-  //  echo $row['card_number'];
-  //  echo $row['book_id'];	
-  //  echo $row['borrow_number'];
-  }
-//  echo $total;
- // echo $rightPassword;
- // echo $Password;
- // echo $name;
- // echo $department;
 	if ($Password == $rightPassword)
 	{ 
 		echo "<script>alert('Log in successfully!')</script>";		
@@ -562,6 +554,7 @@ form input[type=text_long] {
 				<h2> Search The book Your borrow: </h2>
 				<ul>
 					<input type = "hidden" name = "CardNumber" value = "<?php echo $Username;?>"/>
+           <input type = "hidden" name = "password" value = "<?php echo $Password;?>" />
 				</ul>
 				<ul>
 					<input type="submit"  value = "search" style=" font-size: 14px;" class = "button"/>
@@ -584,7 +577,7 @@ form input[type=text_long] {
         </h3>
 			</ul>
       <ul>
-        <li style = "font-size: 24px;"> <a href="http://our.library.com/bookrank">Popular Books Rank</a> </li>
+        <li style = "font-size: 24px;"> <a href="http://our.library.com/bookrank">Library Stock Profile</a> </li>
       </ul>
 
 			<h2>Checkout Record Analysis 2016</h2>

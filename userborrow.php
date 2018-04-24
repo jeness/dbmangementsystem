@@ -20,7 +20,7 @@
 	$cardNumber = $_GET['CardNumber'];
 	$bookNumber = $_GET['BookNumber'];
 	$borrowDate = date('Y-m-d');
-	$returnDate = date('Y-m',mktime (0,0,0,date("m")+1,date("d")+1,date("Y")));
+	$returnDate = date('Y-m-d');
 
 	$searchBook = oci_parse($con,'select *
         from bookwithcate
@@ -68,10 +68,13 @@
 	  		$countBorrow = $countBorrow + 1;
 	  	}
 
-        $borrowBook = oci_parse($con,'INSERT INTO "borrow" VALUES (:bibnum,:borrowdatetime,:returndatetime,:US_ID)');
+        $borrowBook = oci_parse($con,'INSERT INTO "borrow" VALUES (:bibnum,
+        	sysdate,
+        	sysdate,
+         	:US_ID)');
 			oci_bind_by_name($borrowBook,':bibnum',$bookNumber);
-			oci_bind_by_name($borrowBook, ':borrowdatetime', $borrowDate);
-			oci_bind_by_name($borrowBook, ':returndatetime', $returnDate);
+			// oci_bind_by_name($borrowBook, ':borrowdatetime', $borrowDate);
+			// oci_bind_by_name($borrowBook, ':returndatetime', $returnDate);
             oci_bind_by_name($borrowBook, ':US_ID', $cardNumber);
 			$resul = oci_execute($borrowBook,OCI_COMMIT_ON_SUCCESS);
 		    oci_free_statement($borrowBook);  

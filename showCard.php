@@ -238,7 +238,7 @@ form input[type=text_long] {
 	  }
 	else echo "<script>alert('searched successfully!')</script>";
 	
-		$cardNumber = "'".$_GET['CardNumber']."'";
+		$cardNumber = $_GET['CardNumber'];
 // 	$sqlQuery = " 	
 // 		select *
 // 		from book, borrow
@@ -247,29 +247,32 @@ form input[type=text_long] {
 // 		and borrow.return_date = 0
 // 	";
 	//echo $sqlQuery;
-	$checkuser=oci_parse($con,'SELECT * FROM borrow where US_ID = (:userid)');
+	$checkuser=oci_parse($con,'
+SELECT * FROM "BOOKWITHCATE", "borrow" where "borrow"."US_ID" =(:userid)
+    AND "BOOKWITHCATE"."BIBNUM" = "borrow"."bibnum" 
+    and "borrow"."returndatetime" = "borrow"."borrowdatetime"');
 	oci_bind_by_name($checkuser, ":userid",$cardNumber);
 	$result = oci_execute($checkuser);
- 	 $nrows = oci_fetch_all($checkuser, $results);
-      if ($nrows > 0) {
-         echo "<table border=1> ";
-         echo "<tr> ";
-         foreach ($results as $key => $val) {
-            echo "<th>$key</th> ";
-         }
-         echo "</tr> ";
-         for ($i = 0; $i < $nrows; $i++) {
-            echo "<tr> ";
-            foreach ($results as $data) {
-               echo "<td>$data[$i]</td> ";
-            }
-            echo "</tr> ";
-         }
-         echo "</table> ";
-      } else {
-         echo "No data about the user is found.<br /> ";
-      }
-      echo "$nrows Records Selected<br /> ";
+ 	 // $nrows = oci_fetch_all($checkuser, $results);
+   //    if ($nrows > 0) {
+   //       echo "<table border=1> ";
+   //       echo "<tr> ";
+   //       foreach ($results as $key => $val) {
+   //          echo "<th>$key</th> ";
+   //       }
+   //       echo "</tr> ";
+   //       for ($i = 0; $i < $nrows; $i++) {
+   //          echo "<tr> ";
+   //          foreach ($results as $data) {
+   //             echo "<td>$data[$i]</td> ";
+   //          }
+   //          echo "</tr> ";
+   //       }
+   //       echo "</table> ";
+   //    } else {
+   //       echo "No data about the user is found.<br /> ";
+   //    }
+   //    echo "$nrows Records Selected<br /> ";
   	
   /*
   while($row = mysql_fetch_array($result))
@@ -297,7 +300,7 @@ $p = 1;
             <div class=\"flat-form_q\">";
               
               echo "<div class = \"breathe-btn\"> The books This card borrow</div>";
-	while($row = oci_fetch_array($result))
+	while($row = oci_fetch_array($checkuser))
   {   
   echo "<div id = \"login\" class=\"form-action show\">";
  
@@ -308,15 +311,17 @@ $p = 1;
   echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">NO.";
   echo $p."</li>";
   echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Book Number:</li>";
-  echo $row['book_id'];
-  $book_id_now = $row['book_id']; 
+  $book_id_now = $row['BIBNUM'];
+  echo $book_id_now;
   echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Book Name:</li>";
-  echo $row['book_name'];
+  echo $row['TITLE'];
   echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Numbers In stock:</li>";
-  echo $row['stock'];
+  echo $row['ITEMCOUNT'];
   $CardNumber = $_GET['CardNumber'];
+  $Password = $_GET['password'];
   echo "<input type = \"hidden\" name = \"CardNumber\" value = $CardNumber \>";
   echo "<input type = \"hidden\" name = \"BookNumber\" value = $book_id_now \>";
+  echo "<input type = \"hidden\" name = \"password\" value = $Password \>";
   echo "<input type = \"hidden\" name = \"url\" value = $url \>";
   echo "<input style = \"font-size :13px; \" type=\"submit\" value = \"return it\" class = \"button\">";
   echo "</ul>";
@@ -325,6 +330,25 @@ $p = 1;
   $p++;
   if ($p>50) break;
   }
+    
+    echo "<div id = \"login\" class=\"form-action show\">";
+   
+    echo "<form action=\"user.php\" method=\"get\">";
+
+    echo "<ul>";
+     echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Finally,";
+    echo "</li>";
+    echo "<li style = \"font-size :18px; font-weight:bold; color:#C8C8C8\">Return to the User Page</li>";
+    $CardNumber = $_GET['CardNumber'];
+    $Password = $_GET['password'];
+    echo "<input type = \"hidden\" name = \"username\" value = $CardNumber \>";
+     echo "<input type = \"hidden\" name = \"password\" value = $Password \>";
+    echo "<input type = \"hidden\" name = \"url\" value = $url \>";
+    echo "<input style = \"font-size :13px; \" type=\"submit\" value = \"Return\" class = \"button\">";
+    echo "</ul>";
+    echo "</form>";
+    echo "</div>";
+
       echo("
             </div>
           </div>")

@@ -9,14 +9,13 @@
 
 	$cardNumber = $_GET['CardNumber'];
 	$name 		= $_GET['Name'];
-	// $department = $_GET['Department'];
 	$email = $_GET['Email'];
 	$phonenumber = $_GET['Phonenumber'];
 	$password 	= $_GET['PassWord'];
 	
 	$statementselect = oci_parse($con,'select *
 		from "LIBRARYUSER"
-		where "LIBRARYUSER".user_id = (:cardNumber)');
+		where "LIBRARYUSER".US_ID = (:cardNumber)');
 	oci_bind_by_name($statementselect,":cardNumber",$cardNumber);
 	// oci_bind_by_name($statementselect,':name', $name);
 	// oci_bind_by_name($statementselect,':department',$department);
@@ -50,11 +49,7 @@
 			oci_bind_by_name($statement,':password', $password);
 			$resul = oci_execute($statement,OCI_COMMIT_ON_SUCCESS);
 		    oci_free_statement($statement);  
-		    // if(oci_num_rows){  
-      // 	    }  
-		//echo $sqlQuery;
-		
-		//echo $query;
+
 		echo "<script>alert('Create library user successfully!')</script>";
 		echo "<script language=\"javascript\">";
 		echo "document.location=\"index.php\"";
