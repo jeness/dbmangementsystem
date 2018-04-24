@@ -500,15 +500,11 @@ form input[type=text_long] {
 				<h2>Search books:</h2>
 					<ul>
 						<li> Year </li>
-						<li> From &nbsp<input type="text" name="yearstart">&nbsp To &nbsp<input type="text" name="yearend"> </li>
+						<li> From <input type="text" name="yearstart"> To <input type="text" name="yearend"> </li>
 					</ul>
 					<ul>
 						<li> Author name:	</li>
 						<li> <input type="text_long" name="authorname"> </li>
-					</ul>
-					<ul>
-						<li> Publisher:	</li>
-						<li> <input type="text_long" name="press"> </li>
 					</ul>
 					<ul>
 						<li> Subject:	</li>
