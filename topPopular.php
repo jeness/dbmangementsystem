@@ -73,11 +73,11 @@ $result = oci_execute($readingdays);
 
     <div class="flat-form">
       <ul class="tabs">
-          <li>
+         <!--  <li>
               <a href="#file" class="active">Rank</a>
-          </li>
+          </li> -->
           <li>
-              <a href="#author">AUTHOR</a>
+              <a href="#author" class="active">AUTHOR</a>
           </li>
           <li>
               <a href="#book">BOOK</a>
@@ -87,7 +87,7 @@ $result = oci_execute($readingdays);
           </li>
       </ul>
 
-      <div id="file" class="form-action show">
+    <!--   <div id="file" class="form-action show">
 		<h1>Special Informations:</h1>
         <ul>
         <li style = "font-size: 24px;">Total number of books in library:</li>
@@ -116,10 +116,10 @@ $result = oci_execute($readingdays);
 				<li style = "font-size: 24px;">Peak hours</li>
 
 			 </ul>
-      </div>
+      </div> -->
 
     
-      <div id="author" class="form-action hide">
+      <div id="author" class="form-action show">
         <h1>
           Top 50 Popular Authors
         </h1>

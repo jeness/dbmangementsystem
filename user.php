@@ -578,8 +578,9 @@ form input[type=text_long] {
 
 	<div id="potential" class="form-action hide">
 		<form action="showCard.php" method="get" />
-			<h2>Library Data Analysis:</h2>
+			<h2>Library Profile</h2>
 			<ul>
+        <a href="http://baidu.com">Subjects rank</a>  
 				<li style = "font-size: 24px;" > Total Books Amount: </li> 
 				<h3> <?php echo $Username;?> </h3>
 			</ul>
@@ -590,9 +591,9 @@ form input[type=text_long] {
 			 <h3> <?php echo $name;?>	</h3>
 			</ul>
 
-			<h2>Checkout Record Analysis</h2>
+			<h2>Checkout Record Analysis 2016</h2>
 			<ul>
-			    <li style = "font-size: 24px;"> Popular Books: </li>
+        <li style = "font-size: 24px;"> <a href="http://our.library.com/toppopular#author">Popular Books Rank</a> </li>
 				<h3> In 2016 </h3>
 			</ul>
 			<ul>
