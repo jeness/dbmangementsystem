@@ -124,7 +124,7 @@ $result = oci_execute($readingdays);
           Top 50 Popular Authors
         </h1>
         <?php
-        $rankauthor=oci_parse($con,'SELECT from(select author,count(borrowdatetime) as frequency from(
+        $rankauthor=oci_parse($con,'SELECT *from(select author,count(borrowdatetime) as frequency from(
         select author, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
         where bookwithcate.BIBNUM=checkoutrecord.bibnum)
         group by  author
