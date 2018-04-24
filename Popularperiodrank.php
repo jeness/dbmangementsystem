@@ -47,7 +47,7 @@ $result = oci_execute($readingdays);
     <!-- Basic Page Needs
   ================================================== -->
     <meta charset="utf-8">
-    <title>Popular Book Rank</title>
+    <title>Popular Time Rank</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -68,7 +68,7 @@ $result = oci_execute($readingdays);
 
 <div class="container">
     <h1 align="center">
-      Popular Book Rank
+      Popular Time Rank
     </h1>
 
     <div class="flat-form">
@@ -77,13 +77,13 @@ $result = oci_execute($readingdays);
               <a href="#file" class="active">Rank</a>
           </li> -->
           <li>
-              <a href="#author" class="active">AUTHOR</a>
+              <a href="#month" class="active">MONTH</a>
           </li>
           <li>
-              <a href="#book">BOOK</a>
+              <a href="#date">DATE</a>
           </li>
           <li>
-              <a href="#subject">SUBJECT</a>
+              <a href="#hour">HOUR</a>
           </li>
       </ul>
 
@@ -119,20 +119,17 @@ $result = oci_execute($readingdays);
       </div> -->
 
     
-      <div id="author" class="form-action show">
+      <div id="month" class="form-action show">
         <h1>
-          Top 50 Popular Authors
+          Peak Month
         </h1>
         <?php
-        $rankauthor=oci_parse($con,'SELECT *from(select author,count(borrowdatetime) as frequency from(
-        select author, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
-        where bookwithcate.BIBNUM=checkoutrecord.bibnum)
-        group by  author
-        order by count(borrowdatetime) desc)
-        where rownum<=50 and author is not null'
+        $rankmonth=oci_parse($con,'SELECT datemonth, count(*) as frequency from (select substr(borrowdatetime,4,3)  as datemonth from checkoutrecord)
+          group by datemonth
+          order by count(*) desc'
         );
-        $resultrankauthor = oci_execute($rankauthor);
-        $nrows = oci_fetch_all($rankauthor, $results2);
+        $resultrankmonth = oci_execute($rankmonth);
+        $nrows = oci_fetch_all($rankmonth, $results2);
       if ($nrows > 0) {
          echo "<table border=1> ";
          echo "<tr> ";
@@ -152,25 +149,21 @@ $result = oci_execute($readingdays);
       } else {
          echo "No data found<br /> ";
       }
-      echo "$nrows Records Selected<br /> ";
-
         ?>
       </div>
 
-      <div id="book"  class="form-action hide">
+      <div id="date"  class="form-action hide">
           <h1>
-		    Top 100 Popular Books
+		    Popular Date Top 20
 		  </h1>
       <?php
-      $rankbook = oci_parse($con, 'SELECT * from (select title,count(borrowdatetime) as frequency from(
-      select title, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
-      where bookwithcate.BIBNUM=checkoutrecord.bibnum)
-      group by bib ,title
-      order by count(borrowdatetime) desc)
-      where rownum<=100'
+      $rankdate = oci_parse($con, 'select * from (select bookday, count(*) as frenquency from (select substr(borrowdatetime,1,6)  as bookday from checkoutrecord)
+        group by bookday
+        order by count(*) desc)
+        where rownum<=20'
       );
-      $resultrankbook=oci_execute($rankbook);
-      $nrows = oci_fetch_all($rankbook, $results1);
+      $resultrankdate=oci_execute($rankdate);
+      $nrows = oci_fetch_all($rankdate, $results1);
       if ($nrows > 0) {
          echo "<table border=1> ";
          echo "<tr> ";
@@ -190,15 +183,15 @@ $result = oci_execute($readingdays);
       } else {
          echo "No data found<br /> ";
       }
-      echo "$nrows Records Selected<br /> ";
+      
       ?>
 
         
       </div>
 
-      <div id="subject" class="form-action hide">
+      <div id="hour" class="form-action hide">
         <h1>
-		  Top 30 Popular Subjects
+		  Peak Hour
 		</h1>
 <?php
 //       $ranksub=oci_parse($con,'SELECT * from(select subject, count(bibnum) as frequency from bookwithcate
@@ -207,12 +200,8 @@ $result = oci_execute($readingdays);
 // where rownum<=30 and subject is not null
 //       ');
 
-$ranksub=oci_parse($con,'SELECT * from (select subject,count(borrowdatetime) as frequency from(
-select subject, bookwithcate.bibnum as bib, borrowdatetime  from bookwithcate, checkoutrecord
-where bookwithcate.BIBNUM=checkoutrecord.bibnum)
-group by bib ,subject
-order by count(borrowdatetime) desc)
-where rownum<=30');
+$ranksub=oci_parse($con,"SELECT peakhour, count(*)as frequency from (select (substr(borrowdatetime,11,2)||' '||substr(borrowdatetime,-2,2))as peakhour from checkoutrecord) group by peakhour order by count(*) desc"
+);
 
 
       $resultranksub=oci_execute($ranksub);
@@ -258,7 +247,7 @@ where rownum<=30');
       background: #e74c3c;
       margin: 25px auto;
       width: 500px;
-      height: 1600px;
+      height: 800px;
       position: relative;
       font-family: 'Roboto';
     }

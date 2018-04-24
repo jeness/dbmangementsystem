@@ -580,24 +580,38 @@ form input[type=text_long] {
 		<form action="showCard.php" method="get" />
 			<h2>Library Profile</h2>
 			<ul>
-        <a href="http://baidu.com">Subjects rank</a>  
-				<li style = "font-size: 24px;" > Total Books Amount: </li> 
-				<h3> <?php echo $Username;?> </h3>
+      	<h3> <?php 
+          $numofbooks=oci_parse($con,'SELECT count(*) as booknum from "BOOKWITHCATE"');
+          $r1 = oci_execute($numofbooks);
+          $row1 = oci_fetch_array($numofbooks);
+          $numofbooksresult=$row1["BOOKNUM"];
+          echo "<li style = \"font-size : 24px;\"> Total Books Amount:";
+          echo $numofbooksresult."</li>";
+          ?> 
+        </h3>
 			</ul>
-			<ul>
-				<li style = "font-size: 24px;"> Total Subject Amount : </li>
-			</ul>
-			<ul>
-			 <h3> <?php echo $name;?>	</h3>
-			</ul>
+      <ul>
+        <li style = "font-size: 24px;"> <a href="http://our.library.com/bookrank">Popular Books Rank</a> </li>
+      </ul>
 
 			<h2>Checkout Record Analysis 2016</h2>
-			<ul>
-        <li style = "font-size: 24px;"> <a href="http://our.library.com/toppopular#author">Popular Books Rank</a> </li>
-				<h3> In 2016 </h3>
+			 <ul>
+         <h3> <?php 
+          $numofrecords=oci_parse($con,'SELECT count(*) as recordnum from "CHECKOUTRECORD"');
+          $r2 = oci_execute($numofrecords);
+          $row2 = oci_fetch_array($numofrecords);
+          $numofrecordsresult=$row2["RECORDNUM"];
+          echo "<li style = \"font-size : 24px;\"> Total Records Amount:";
+          echo $numofrecordsresult."</li>";
+          ?> </li>
+        </h3>
+      </ul>
+
+      <ul>
+        <li style = "font-size: 24px;"> <a href="http://our.library.com/toppopular">Popular Books Rank</a> </li>
 			</ul>
 			<ul>
-			    <li style = "font-size: 24px;"> Popular Authors:</li>
+        <li style = "font-size: 24px;"><a href="http://our.library.com/popularperiodrank"> Popular Time Rank</a> </li>
 			</ul>
 		</form>
 	</div>
